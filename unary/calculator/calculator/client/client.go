@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	calculatorpb "github.com/psinthorn/go-grpc-class/calculator/proto"
+	calculatorpb "github.com/psinthorn/go-grpc-class/unary/calculator/proto"
 
 	"google.golang.org/grpc"
 )
