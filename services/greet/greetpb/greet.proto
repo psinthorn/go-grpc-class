@@ -3,6 +3,22 @@ syntax="proto3";
 package greet;
 option go_package="greetpb";
 
+
+service GreetService {
+    // Unary
+    rpc Greet(GreetRequest) returns (GreetResponse) {};
+
+    // Server streaming
+    rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
+
+    // Client streaming
+    rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+
+    // Bidirection 
+
+}
+
+
 message Greeting {
     string first_name = 1;
     string last_name =   2;
@@ -24,11 +40,12 @@ message GreetManyTimesResponse {
     string results = 1;
 }
 
-service GreetService {
-    // Unary
-    rpc Greet(GreetRequest) returns (GreetResponse) {};
-
-    // Server streaming
-    rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
+message LongGreetRequest {
+    Greeting greet = 1;
 }
+
+message LongGreetResponse {
+    string results = 1;
+}
+
 
