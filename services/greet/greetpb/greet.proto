@@ -41,7 +41,7 @@ message GreetManyTimesResponse {
 }
 
 message LongGreetRequest {
-    Greeting greet = 1;
+    Greeting greeting = 1;
 }
 
 message LongGreetResponse {
