@@ -13,6 +13,19 @@ message SumResponse {
     int32 result = 1;
 }
 
+message AverageRequest {
+    int32 num = 1;
+}
+
+message AverageResponse {
+    int32 result = 1;
+}
+
+
 service CalculatorService {
+    // Unary
     rpc Sum(SumRequest) returns (SumResponse) {};
+
+    // Client-Side 
+    rpc Average(stream AverageRequest) returns (AverageResponse) {};
 }
