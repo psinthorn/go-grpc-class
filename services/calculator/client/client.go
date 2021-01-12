@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	calculatorpb "github.com/psinthorn/go-grpc-class/unary/calculator/proto"
-
+	calculatorpb "github.com/psinthorn/go-grpc-class/services/calculator/proto"
 	"google.golang.org/grpc"
 )
 
@@ -22,7 +21,11 @@ func main() {
 	// Call service on server with client connection payload
 	client := calculatorpb.NewCalculatorServiceClient(ccp)
 
-	doUnarySum(client)
+	// Unary client
+	// doUnarySum(client)
+
+	// Client of Client-Side streaming
+	doClientSideAverage(client)
 
 }
 
@@ -40,4 +43,29 @@ func doUnarySum(client calculatorpb.CalculatorServiceClient) {
 	}
 
 	log.Fatalf("Sum of req is %v", res)
+}
+
+func doClientSideAverage(client calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Client-Side Streaming start...")
+
+	numbers := []int32{1, 6, 5, 7, 9, 11}
+
+	stream, err := client.Average(context.Background())
+	for _, num := range numbers {
+		fmt.Printf("sending number: %v \n", num)
+		stream.Send(&calculatorpb.AverageRequest{
+			Num: num,
+		})
+		if err != nil {
+			log.Fatalf("Error on streaming data to server %v\n", err)
+		}
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		fmt.Printf("Error on receiving %v ", err)
+	}
+
+	fmt.Printf("Average is: %v", res.GetResult())
+
 }
