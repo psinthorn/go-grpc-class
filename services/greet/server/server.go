@@ -80,6 +80,42 @@ func (*server) LongGreet(stream greetpb.GreetService_LongGreetServer) error {
 	}
 }
 
+// BiDi Server
+func (*server) GreetEveryone(stream greetpb.GreetService_GreetEveryoneServer) error {
+	fmt.Println("BiDi Server Invoked...")
+
+	for {
+		req, err := stream.Recv()
+		fmt.Printf("%v", req)
+		// หากรับและอ่านค่าจาก req ที่ streaming มาจนหมดแล้ว error จะเท่ากับ io.EOF
+		// ให้ return nil เพื่อหยุดทำงาน
+		if err == io.EOF {
+			fmt.Println("Reading conpleted")
+			return nil
+		}
+		// หากพบปัญหาในการอ่าน stream ให้ return err
+		if err != nil {
+			fmt.Println("Error while reading client streaming data...")
+			return err
+		}
+
+		// หากไม่มีปัญหาใดในการรับและอ่านค่า stream จะวนลูปรับค่าและนำไปดำเนินการตาม Logic และส่งกลับ (วนลูปจนกว่าจะ io.EOF)
+		firstname := req.GetGreeting().GetFirstName()
+		result := firstname + " :) \n"
+
+		// ส่งค่าหรือข้อมูลที่ดำเนินการตาม logic แล้ว response ไปแบบ streaming
+		sendErr := stream.Send(&greetpb.GreetEveryoneResponse{
+			Results: result,
+		})
+		// หากมี error ให้ return error
+		if sendErr != nil {
+			fmt.Println("Error on sending... :( ")
+			return sendErr
+		}
+	}
+
+}
+
 func main() {
 
 	// Log Unary server start

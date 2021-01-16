@@ -57,8 +57,38 @@ func (*server) Average(stream calculatorpb.CalculatorService_AverageServer) erro
 
 }
 
+func (*server) Maximum(stream calculatorpb.CalculatorService_MaximumServer) error {
+	// Receiving data from client request
+	// รับข้อมูลจาก client request
+	maxNum := int32(0)
+	for {
+		streamData, err := stream.Recv()
+		if err == io.EOF {
+			fmt.Printf("Reading data completed... %v ", err)
+			return nil
+		}
+		if err != nil {
+			fmt.Printf("Error while reading req data stream %v ", err)
+			return err
+		}
+
+		reqNum := streamData.GetNum()
+		fmt.Printf("Current number is: %v \n", maxNum)
+		if reqNum > maxNum {
+			maxNum = reqNum
+			fmt.Printf("Maximum is: %v \n", maxNum)
+
+			result := &calculatorpb.MaximumResponse{
+				Result: maxNum,
+			}
+			stream.Send(result)
+		}
+	}
+
+}
+
 func main() {
-	fmt.Println("Unary Server for Calculator Summary Start... ")
+	fmt.Println("Server for Calculator is start... ")
 
 	// New gRPC server
 	s := grpc.NewServer()

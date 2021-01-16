@@ -21,6 +21,14 @@ message AverageResponse {
     int32 result = 1;
 }
 
+message MaximimumRequest{
+    int32 num = 1;
+}
+
+message MaximumResponse {
+    int32 result = 1;
+}
+
 
 service CalculatorService {
     // Unary
@@ -28,4 +36,7 @@ service CalculatorService {
 
     // Client-Side 
     rpc Average(stream AverageRequest) returns (AverageResponse) {};
+
+    // Bidirectional Streaming
+    rpc Maximum(stream MaximimumRequest) returns (stream MaximumResponse) {};
 }
