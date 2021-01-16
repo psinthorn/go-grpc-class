@@ -15,6 +15,7 @@ service GreetService {
     rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
 
     // Bidirection 
+    rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
 
 }
 
@@ -45,6 +46,14 @@ message LongGreetRequest {
 }
 
 message LongGreetResponse {
+    string results = 1;
+}
+
+message GreetEveryoneRequest {
+    Greeting greeting =1;
+}
+
+message GreetEveryoneResponse {
     string results = 1;
 }
 
